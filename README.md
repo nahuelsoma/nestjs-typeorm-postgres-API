@@ -1,4 +1,4 @@
-## 1. Create new Nest.js app
+## Create new Nest.js app
 
 Doc: https://docs.nestjs.com/cli/usages
 
@@ -6,7 +6,7 @@ Doc: https://docs.nestjs.com/cli/usages
 nest new nest-typeorm-postgres
 ```
 
-## 2. Create modules
+## Create modules
 
 ```
 nest g mo database
@@ -14,7 +14,7 @@ nest g mo products
 nest g mo users
 ```
 
-## 3. Create controllers files
+## Create controllers files
 
 ```
 nest g co products/controllers/products --flat
@@ -26,7 +26,7 @@ nest g co users/controllers/orders --flat
 nest g co users/controllers/order-item --flat
 ```
 
-## 4. Create services files
+## Create services files
 
 ```
 nest g s products/services/products --flat
@@ -38,7 +38,7 @@ nest g s users/services/orders --flat
 nest g s users/services/order-item --flat
 ```
 
-## 5. Create entities files
+## Create entities files
 
 Manually create files:
 
@@ -50,7 +50,7 @@ Manually create files:
 - src/users/entities/order.entity.ts
 - src/users/entities/order-item.entity.ts
 
-## 6. Create dtos files
+## Create dtos files
 
 Manually create files:
 
@@ -62,19 +62,19 @@ Manually create files:
 - src/users/dtos/order.dto.ts
 - src/users/dtos/order-item.dto.ts
 
-## 6. Create pipes files
+## Create pipes files
 
 ```
 nest g pipe common/parse-int
 ```
 
-## 7. Install @nestjs/config module
+## Install @nestjs/config module
 
 ```
 npm i --save @nestjs/config
 ```
 
-## 7. Create .env files
+## Create .env files
 
 ```
 .env
@@ -84,7 +84,7 @@ npm i --save @nestjs/config
 
 Add .env files to .gitignore file
 
-## 8. Create environmets.ts file
+## Create environmets.ts file
 
 Manually create file:
 
@@ -96,14 +96,61 @@ Manually create file:
 
 - src/config.ts
 
-## 7. Install joi package
+## Install joi package
 
 ```
 npm install --save joi
 ```
 
-## 7. Install swagger package
+## Install swagger package
 
 ```
 npm install --save @nestjs/swagger swagger-ui-express
+```
+
+## Create docker-compose.yml file
+
+Manually create file:
+
+- docker-compose.yml
+
+## Container up
+
+```
+docker-compose up -d
+```
+
+Check status
+
+```
+docker-compose ps
+```
+
+## Login pgAdmin in browser
+
+pgAdmin: http://127.0.0.1:5050
+
+## Create server and database
+
+Object > Register > Server
+
+- Name: my_db
+
+- Hostname/Adress: postgres
+
+- Username: root
+
+- Password: 123456
+
+## Install Postgres packages
+
+```
+npm i pg
+npm i @types/pg -D
+```
+
+## Install TypeORM packages
+
+```
+npm install --save @nestjs/typeorm typeorm
 ```
