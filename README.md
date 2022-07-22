@@ -154,3 +154,51 @@ npm i @types/pg -D
 ```
 npm install --save @nestjs/typeorm typeorm
 ```
+
+## Complete parse-int.pipe.ts
+
+## Complete database.module.ts
+
+## Complete main.ts
+
+## Install class-transformer package
+
+```
+npm install --save class-transformer
+```
+
+## Complete entities
+
+- src/products/entities/product.entity.ts
+- src/products/entities/brand.entity.ts
+- src/products/entities/categorie.entity.ts
+- src/users/entities/user.entity.ts
+- src/users/entities/customer.entity.ts
+- src/users/entities/order.entity.ts
+- src/users/entities/order-item.entity.ts
+
+## Install class-validator package
+
+```
+npm install --save class-validator
+```
+
+## Complete dtos
+
+- src/products/dtos/product.dto.ts
+- src/products/dtos/brand.dto.ts
+- src/products/dtos/category.dto.ts
+- src/users/dtos/user.dto.ts
+- src/users/dtos/customer.dto.ts
+- src/users/dtos/order.dto.ts
+- src/users/dtos/order-item.dto.ts
+
+## Complete services
+
+- src/products/services/products.service.ts
+- src/products/services/brands.service.ts
+- src/products/services/categories.service.ts
+- src/users/services/users.service.ts
+- src/users/services/customers.service.ts
+- src/users/services/orders.service.ts
+- src/users/services/order-item.service.ts
