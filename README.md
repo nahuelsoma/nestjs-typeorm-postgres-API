@@ -202,3 +202,19 @@ npm install --save class-validator
 - src/users/services/customers.service.ts
 - src/users/services/orders.service.ts
 - src/users/services/order-item.service.ts
+
+## Complete controllers
+
+- src/products/controllers/products.controller.ts
+- src/products/controllers/brands.controller.ts
+- src/products/controllers/categories.controller.ts
+- src/users/controllers/users.controller.ts
+- src/users/controllers/customers.controller.ts
+- src/users/controllers/orders.controller.ts
+- src/users/controllers/order-item.controller.ts
+
+## Complete app.module.ts
+
+## Complete users.module.ts
+
+## Complete products.module.ts
