@@ -12,13 +12,14 @@ import { Exclude } from 'class-transformer';
 import { Product } from '../../products/entities/product.entity';
 import { Order } from './order.entity';
 
-@Entity()
+@Entity({ name: 'orders_items' })
 export class OrderItem {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Exclude()
   @CreateDateColumn({
+    name: 'create_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
@@ -26,6 +27,7 @@ export class OrderItem {
 
   @Exclude()
   @UpdateDateColumn({
+    name: 'update_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })

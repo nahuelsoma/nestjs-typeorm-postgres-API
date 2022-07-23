@@ -6,23 +6,25 @@ import {
   Entity,
   OneToMany,
 } from 'typeorm';
+import { Exclude, Expose } from 'class-transformer';
+
 import { Customer } from './customer.entity';
 import { OrderItem } from './order-item.entity';
 
-import { Exclude, Expose } from 'class-transformer';
-
-@Entity()
+@Entity({ name: 'orders' })
 export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
   @CreateDateColumn({
+    name: 'create_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
   @UpdateDateColumn({
+    name: 'update_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })

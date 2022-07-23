@@ -2,7 +2,7 @@ version: '3.3'
 services:
   # Postgres configuration
   postgres: 
-    container_name: postgres 
+    container_name: postgres-auth
     image: postgres:13
     environment: 
       - POSTGRES_DB=my_db

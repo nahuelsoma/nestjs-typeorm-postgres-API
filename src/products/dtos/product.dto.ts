@@ -61,10 +61,10 @@ export class FilterProductsDto {
   offset: number;
 
   @IsOptional()
-  @IsPositive()
+  @Min(0)
   minPrice: number;
 
   @ValidateIf((item) => item.minPrice)
-  @IsPositive()
+  @Min(0)
   maxPrice: number;
 }
