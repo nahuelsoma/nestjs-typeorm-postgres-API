@@ -1,220 +1,127 @@
-## Create new Nest.js app
+## Initial config
 
-Doc: https://docs.nestjs.com/cli/usages
+This course starts with an API already working. The authentication is going to be configurated on an already working endpoint.
 
-```
-nest new nest-typeorm-postgres
-```
+## Protection with Guards
 
-## Create modules
+### Introduction to Guards
 
-```
-nest g mo database
-nest g mo products
-nest g mo users
-```
+Guards have a single responsibility. They determine whether a given request will be handled by the route handler or not, depending on certain conditions (like permissions, roles, ACLs, etc.) present at run-time. This is often referred to as authorization.
 
-## Create controllers files
+Create new module:
 
 ```
-nest g co products/controllers/products --flat
-nest g co products/controllers/brands --flat
-nest g co products/controllers/categories --flat
-nest g co users/controllers/users --flat
-nest g co users/controllers/customers --flat
-nest g co users/controllers/orders --flat
-nest g co users/controllers/order-item --flat
+nest g mo auth
 ```
 
-## Create services files
+Create new guard:
 
 ```
-nest g s products/services/products --flat
-nest g s products/services/brands --flat
-nest g s products/services/categories --flat
-nest g s users/services/users --flat
-nest g s users/services/customers --flat
-nest g s users/services/orders --flat
-nest g s users/services/order-item --flat
+nest g gu auth/guards/apiKey --flat
 ```
 
-## Create entities files
+Use the guardian to protect an endpoint through the controller
 
-Manually create files:
-
-- src/products/entities/product.entity.ts
-- src/products/entities/brand.entity.ts
-- src/products/entities/categorie.entity.ts
-- src/users/entities/user.entity.ts
-- src/users/entities/customer.entity.ts
-- src/users/entities/order.entity.ts
-- src/users/entities/order-item.entity.ts
-
-## Create dtos files
-
-Manually create files:
-
-- src/products/dtos/product.dto.ts
-- src/products/dtos/brand.dto.ts
-- src/products/dtos/categorie.dto.ts
-- src/users/dtos/user.dto.ts
-- src/users/dtos/customer.dto.ts
-- src/users/dtos/order.dto.ts
-- src/users/dtos/order-item.dto.ts
-
-## Create pipes files
+- import the guardian
 
 ```
-nest g pipe common/parse-int
+    import { ApiKeyGuard } from './auth/guards/api-key.guard';
 ```
 
-## Install @nestjs/config module
+- use the guardian decorator
 
 ```
-npm i --save @nestjs/config
+    @UseGuards(ApiKeyGuard)
+    @Get()
+    ...
 ```
 
-## Create .env files
+The guard can be used to protect a single endpoint or an entirely controller.
+
+### Using a decorator
+
+To unprotect an andpoint inside a protected controller, @SetMetadata can be used
 
 ```
-.env
-.stag.env
-.prod.env
+import { SetMetadata } from '@nestjs/common'
 ```
 
-Add .env files to .gitignore file
+Create decorators folder into auth folder
 
-## Create environmets.ts file
-
-Manually create file:
-
-- src/environmets.ts
-
-## Create config.ts file
-
-Manually create file:
-
-- src/config.ts
-
-## Install joi package
+Create a new decorator file
 
 ```
-npm install --save joi
+nest g d auth/decorators/public --flat
 ```
 
-## Install swagger package
+Define isPublic into _api-key_guard.ts_
+
+Import the new decorator into the corresponding controller
 
 ```
-npm install --save @nestjs/swagger swagger-ui-express
+import { Public } from './auth/decorators/public.decorator';
 ```
 
-## Create docker-compose.yml file
-
-Manually create file:
-
-- docker-compose.yml
-
-## Container up
+Use new decorator
 
 ```
-docker-compose up -d
+  @Get()
+  @Public()
+  ...
 ```
 
-Check status
+### Guard with environment variables
+
+Inject environment variables into _api-key_guard.ts_
 
 ```
-docker-compose ps
+@Inject(config.KEY) private configService: ConfigType<typeof config>
 ```
 
-## Login pgAdmin in browser
-
-pgAdmin: http://127.0.0.1:5050
-
-## Create server and database
-
-Object > Register > Server
-
-- Name: my_db
-
-- Hostname/Adress: postgres
-
-- Username: root
-
-- Password: 123456
-
-## Install Postgres packages
+To perform the authorization throug ENV variables, run project with:
 
 ```
-npm i pg
-npm i @types/pg -D
+NODE_ENV=dev npm run start:dev
 ```
 
-## Install TypeORM packages
+To perform the authorization throug staging ENV variables, run project with:
 
 ```
-npm install --save @nestjs/typeorm typeorm
+NODE_ENV=stag npm run start:dev
 ```
 
-## Complete parse-int.pipe.ts
+## Authentication with Passport
 
-## Complete database.module.ts
+### Password hashing in TypeORM
 
-## Complete main.ts
+### Password hashing in MongoDB
 
-## Install class-transformer package
+### Authentication with Passport.js
 
-```
-npm install --save class-transformer
-```
+### Login path
 
-## Complete entities
+## Authentication with JSON Web Tokens
 
-- src/products/entities/product.entity.ts
-- src/products/entities/brand.entity.ts
-- src/products/entities/categorie.entity.ts
-- src/users/entities/user.entity.ts
-- src/users/entities/customer.entity.ts
-- src/users/entities/order.entity.ts
-- src/users/entities/order-item.entity.ts
+### Connecting Passport with JWT
 
-## Install class-validator package
+### Secret from environment variables
 
-```
-npm install --save class-validator
-```
+### Implementing JWT Guard
 
-## Complete dtos
+### Extending JWT Guard
 
-- src/products/dtos/product.dto.ts
-- src/products/dtos/brand.dto.ts
-- src/products/dtos/category.dto.ts
-- src/users/dtos/user.dto.ts
-- src/users/dtos/customer.dto.ts
-- src/users/dtos/order.dto.ts
-- src/users/dtos/order-item.dto.ts
+### Role control in NestJS
 
-## Complete services
+### Obtaining profile commands
 
-- src/products/services/products.service.ts
-- src/products/services/brands.service.ts
-- src/products/services/categories.service.ts
-- src/users/services/users.service.ts
-- src/users/services/customers.service.ts
-- src/users/services/orders.service.ts
-- src/users/services/order-item.service.ts
+## Deploying
 
-## Complete controllers
+### Configuring Mongo Atlas
 
-- src/products/controllers/products.controller.ts
-- src/products/controllers/brands.controller.ts
-- src/products/controllers/categories.controller.ts
-- src/users/controllers/users.controller.ts
-- src/users/controllers/customers.controller.ts
-- src/users/controllers/orders.controller.ts
-- src/users/controllers/order-item.controller.ts
+### Deploying Mongo on Heroku
 
-## Complete app.module.ts
+### Configuring PostgreSQL on Heroku
 
-## Complete users.module.ts
+### Deploying Postgres on Heroku
 
-## Complete products.module.ts
+### Running Postgres migrations on Heroku
