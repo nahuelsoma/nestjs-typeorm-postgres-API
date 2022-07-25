@@ -6,6 +6,8 @@ This course starts with an API already working. The authentication is going to b
 
 ### Introduction to Guards
 
+👉 https://docs.nestjs.com/guards
+
 Guards have a single responsibility. They determine whether a given request will be handled by the route handler or not, depending on certain conditions (like permissions, roles, ACLs, etc.) present at run-time. This is often referred to as authorization.
 
 Create new module:
@@ -94,11 +96,82 @@ NODE_ENV=stag npm run start:dev
 
 ### Password hashing in TypeORM
 
-### Password hashing in MongoDB
+```
+npm i bcrypt
+npm i -D @types/bcrypt
+```
+
+Edit _user.service.ts_ to include bcrypt function
+
+```
+import * as bcrypt from 'bcrypt';
+```
+
+Edit create funtion
+
+```
+const hashPassword = await bcrypt.hash(newUser.password, 10);
+newUser.password = hashPassword;
+```
 
 ### Authentication with Passport.js
 
+👉 https://docs.nestjs.com/security/authentication
+
+Passport is the most popular node.js authentication library, well-known by the community and successfully used in many production applications. It's straightforward to integrate this library with a Nest application using the **@nestjs/passport** module. At a high level, Passport executes a series of steps to:
+
+- Authenticate a user by verifying their "credentials" (such as username/password, JSON Web Token (JWT), or identity token from an Identity Provider)
+- Manage authenticated state (by issuing a portable token, such as a JWT, or creating an Express session)
+- Attach information about the authenticated user to the Request object for further use in route handlers
+
+Install passport package
+
+```
+npm install --save @nestjs/passport passport passport-local
+npm install --save-dev @types/passport-local
+```
+
+Generate new service in auth module
+
+```
+nest g s auth/services/auth --flat
+```
+
+Create new functionality in auth service called _validateUser_ to copare user password and encrypted string in database.
+
+Create new folder
+
+```
+/src/auth/strategies
+```
+
+Create new file
+
+```
+/src/auth/strategies/local.strategy.ts
+```
+
+_This strategy is like a service. It can be created with nest cli._
+
 ### Login path
+
+Create new controller
+
+```
+nest g co auth/controllers/auth --flat
+```
+
+_passport-local wiull recieve two parameters by default: username and password_
+
+Create a new endpoin to authenticate users with local strategy
+
+```
+  @UseGuards(AuthGuard('local'))
+  @Post('login')
+  login(@Req() req: Request) {
+    return req.user;
+  }
+```
 
 ## Authentication with JSON Web Tokens
 
