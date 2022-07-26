@@ -66,6 +66,7 @@ export class ProductsService {
 
   async create(data: CreateProductDto) {
     const newProduct = this.productRepo.create(data);
+
     if (data.brandId) {
       const brand = await this.brandRepo.findOneBy({
         id: data.brandId,

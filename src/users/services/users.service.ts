@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  NotAcceptableException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -6,6 +12,7 @@ import { Client } from 'pg';
 import * as bcrypt from 'bcrypt';
 
 import { User } from '../entities/user.entity';
+import { Customer } from '../entities/customer.entity';
 // import { Order } from '../entities/order.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 
@@ -15,24 +22,30 @@ import { CustomersService } from './customers.service';
 @Injectable()
 export class UsersService {
   constructor(
-    private productsService: ProductsService,
     private configService: ConfigService,
-    @Inject('PG') private clientPg: Client,
-    @InjectRepository(User) private userRepo: Repository<User>,
     private customersService: CustomersService,
+    private productsService: ProductsService,
+    @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Customer) private customerRepo: Repository<Customer>,
+    @Inject('PG') private clientPg: Client,
   ) {}
 
   findAll() {
-    const apiKey = this.configService.get('API_KEY');
-    const dbName = this.configService.get('DATABASE_NAME');
-    console.log(apiKey, dbName);
+    // const apiKey = this.configService.get('API_KEY');
+    // const dbName = this.configService.get('DATABASE_NAME');
+    // console.log(apiKey, dbName);
     return this.userRepo.find({
       relations: ['customer'],
     });
   }
 
   async findOne(id: number) {
-    const user = await this.userRepo.findOneBy({ id });
+    const user = await this.userRepo.findOne({
+      where: {
+        id,
+      },
+      relations: ['customer'],
+    });
     if (!user) {
       throw new NotFoundException(`User #${id} not found`);
     }
@@ -40,7 +53,11 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return this.userRepo.findOne({ where: { email } });
+    const user = this.userRepo.findOne({ where: { email } });
+    if (!user) {
+      throw new NotFoundException(`User #${email} not found`);
+    }
+    return user;
   }
 
   async create(data: CreateUserDto) {
@@ -50,7 +67,9 @@ export class UsersService {
     newUser.password = hashPassword;
 
     if (data.customerId) {
-      const customer = await this.customersService.findOne(data.customerId);
+      const customer = await this.customerRepo.findOneBy({
+        id: data.customerId,
+      });
       newUser.customer = customer;
     }
 
@@ -58,7 +77,27 @@ export class UsersService {
   }
 
   async update(id: number, changes: UpdateUserDto) {
-    const user = await this.findOne(id);
+    const user = await this.userRepo.findOneBy({ id });
+
+    if (changes.customerId) {
+      const customer = await this.customerRepo.findOne({
+        where: {
+          id: changes.customerId,
+        },
+        relations: {
+          user: true,
+        },
+      });
+
+      if (customer.user) {
+        throw new ConflictException(
+          `User ${id} already has a customer id ${changes.customerId}`,
+        );
+      }
+
+      user.customer = customer;
+    }
+
     this.userRepo.merge(user, changes);
     return this.userRepo.save(user);
   }
