@@ -282,12 +282,88 @@ Create new method to obtain orders by customer id in _orders.service.ts_.
 
 ## Deploying
 
-### Configuring Mongo Atlas
-
-### Deploying Mongo on Heroku
-
 ### Configuring PostgreSQL on Heroku
 
+📖 https://devcenter.heroku.com/articles/deploying-nodejs
+
+📖 https://devcenter.heroku.com/articles/heroku-cli
+
+📖 https://devcenter.heroku.com/articles/heroku-postgresql
+
+📖 https://elements.heroku.com/addons/heroku-postgresql
+
+Add into _main.ts_:
+
+```
+  app.enableCors(); // allow requests
+```
+
+```
+  await app.listen(process.env.PORT || 3000); // set port
+```
+
+Add into _package.json_:
+
+```
+"engines": {
+"node": "14.x"
+}
+```
+
+Create Procfile file:
+
+```
+web: npm run strat:prod
+```
+
+Install Heroku CLI
+
+Login into Heroku
+
+```
+heroku login
+```
+
+Create Heroku new app
+
+```
+heroku create
+```
+
+Test Heroku new app in local
+
+```
+heroku local web
+```
+
+Verify heroku addons
+
+```
+heroku addons
+```
+
+Verify heroku-postgres addons documentation
+
+```
+heroku addons:docs heroku-postgresql
+```
+
+Asociate heroku-postgres database to app
+
+```
+heroku addons:create heroku-postgresql:hobby-dev
+```
+
+Verify database conection info
+
+```
+heroku pg:info
+```
+
 ### Deploying Postgres on Heroku
+
+Edit _.env_, _config.ts_, _database.module.ts_ and _app.module.ts_ file to add new database info
+
+Create environment variables in Heroku
 
 ### Running Postgres migrations on Heroku
