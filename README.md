@@ -367,3 +367,5 @@ Edit _.env_, _config.ts_, _database.module.ts_ and _app.module.ts_ file to add n
 Create environment variables in Heroku
 
 ### Running Postgres migrations on Heroku
+
+Create _ormconfig.js_ file

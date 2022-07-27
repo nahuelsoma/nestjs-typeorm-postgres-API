@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   Inject,
-  NotAcceptableException,
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,7 +14,6 @@ import { User } from '../entities/user.entity';
 import { Customer } from '../entities/customer.entity';
 // import { Order } from '../entities/order.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
-
 import { ProductsService } from './../../products/services/products.service';
 import { CustomersService } from './customers.service';
 
