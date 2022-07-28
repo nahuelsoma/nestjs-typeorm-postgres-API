@@ -368,4 +368,12 @@ Create environment variables in Heroku
 
 ### Running Postgres migrations on Heroku
 
-Create _ormconfig.js_ file
+Add TypeORM CLI scripts on _package.json_ file
+
+Create _src/database/ormconfig.ts_ file for cli DataSource configuration
+
+To create a new migration:
+
+```
+npm run migration:generate src/database/migrations/init
+```
