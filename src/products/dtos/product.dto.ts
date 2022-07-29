@@ -9,12 +9,12 @@ import {
   Min,
   ValidateIf,
 } from 'class-validator';
-import { PartialType, ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 
 export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ description: `product's name` })
+  @ApiProperty()
   readonly name: string;
 
   @IsString()

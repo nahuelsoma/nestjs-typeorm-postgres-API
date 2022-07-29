@@ -10,7 +10,7 @@ import { PayloadToken } from 'src/auth/models/token.model';
 import { OrdersService } from '../services/orders.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@ApiTags('profile')
+@ApiTags('Profile')
 @Controller('profile')
 // @Controller('profile')
 export class ProfileController {

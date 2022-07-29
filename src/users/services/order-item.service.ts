@@ -30,7 +30,6 @@ export class OrderItemService {
     item.order = order;
     item.product = product;
     item.quantity = data.quantity;
-    // return this.itemRepo.save(item);
     return this.itemRepo.save(item);
   }
 

@@ -18,8 +18,12 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const config = new DocumentBuilder()
-    .setTitle('API')
-    .setDescription('Nest.js - TypeORM - Postgres')
+    .setTitle('eStore API')
+    .setDescription(
+      `<ul><li>This API is developed with Nest.js, TypeORM and Postgres.</li>
+      <li>You can test each endpoint with the information detailed in this documentation.</li>
+      <li>Endpoints marked as (admin) are restricted for use exclusively by users with the role: admin. In order to use them, you must first create a user with this role from the POST User endpoint.</li></ul>`,
+    )
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

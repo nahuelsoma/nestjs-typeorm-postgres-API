@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 
 import { Customer } from './../entities/customer.entity';
 import { Order } from './../entities/order.entity';
-import { User } from './../entities/user.entity';
 import { CreateOrderDto, UpdateOrderDto } from '../dtos/order.dto';
 
 @Injectable()
@@ -12,7 +11,6 @@ export class OrdersService {
   constructor(
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
     @InjectRepository(Order) private orderRepo: Repository<Order>,
-    @InjectRepository(User) private userRepo: Repository<User>,
   ) {}
 
   async findAll() {

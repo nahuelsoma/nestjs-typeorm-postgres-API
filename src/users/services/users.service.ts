@@ -1,37 +1,26 @@
 import {
   Injectable,
   NotFoundException,
-  Inject,
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
-import { Client } from 'pg';
 import * as bcrypt from 'bcrypt';
 
 import { User } from '../entities/user.entity';
 import { Customer } from '../entities/customer.entity';
-// import { Order } from '../entities/order.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { ProductsService } from './../../products/services/products.service';
-import { CustomersService } from './customers.service';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private configService: ConfigService,
-    private customersService: CustomersService,
     private productsService: ProductsService,
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
-    @Inject('PG') private clientPg: Client,
   ) {}
 
   findAll() {
-    // const apiKey = this.configService.get('API_KEY');
-    // const dbName = this.configService.get('DATABASE_NAME');
-    // console.log(apiKey, dbName);
     return this.userRepo.find({
       relations: ['customer'],
     });
@@ -111,16 +100,5 @@ export class UsersService {
       user,
       products: await this.productsService.findAll(),
     };
-  }
-
-  getTasks() {
-    return new Promise((resolve, reject) => {
-      this.clientPg.query('SELECT * FROM tasks', (err, res) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(res.rows);
-      });
-    });
   }
 }
