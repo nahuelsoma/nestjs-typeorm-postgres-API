@@ -66,6 +66,15 @@ export class ProductsController {
   }
 
   @Roles(Role.ADMIN)
+  @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete an existing product (admin)',
+  })
+  delete(@Param('id') id: number) {
+    return this.productsService.remove(id);
+  }
+
+  @Roles(Role.ADMIN)
   @Put(':id/category/:categoryId')
   @ApiOperation({
     summary: 'Add a new category from an existing product (admin)',
@@ -75,15 +84,6 @@ export class ProductsController {
     @Param('categoryId', ParseIntPipe) categoryId: number,
   ) {
     return this.productsService.addCategoryToProduct(id, categoryId);
-  }
-
-  @Roles(Role.ADMIN)
-  @Delete(':id')
-  @ApiOperation({
-    summary: 'Delete an existing product (admin)',
-  })
-  delete(@Param('id') id: number) {
-    return this.productsService.remove(id);
   }
 
   @Roles(Role.ADMIN)

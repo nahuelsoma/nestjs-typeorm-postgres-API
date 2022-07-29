@@ -17,28 +17,28 @@ export class BrandsService {
     private dataSource: DataSource,
   ) {}
 
-  findAll() {
-    return this.brandsRepo.find();
+  async findAll() {
+    const brands = await this.brandsRepo.find();
+    brands.sort((a, b) => {
+      return a.id - b.id;
+    });
+    return brands;
   }
 
   async findOne(id: number) {
-    const product = this.brandsRepo.findOne({
-      relations: ['products'],
+    const brand = await this.brandsRepo.findOne({
       where: {
         id,
       },
+      relations: ['products'],
     });
-    if (!product) {
-      throw new NotFoundException(`Brand #${id} not found`);
+    if (!brand) {
+      throw new NotFoundException(`Brand id: ${id} not found`);
     }
-    return product;
+    return brand;
   }
 
   async create(payload: CreateBrandDto) {
-    if (!payload) {
-      throw new NotAcceptableException(`You must send the new brand data`);
-    }
-
     const existingBrand = await this.brandsRepo.findOneBy({
       name: payload.name,
     });
@@ -102,18 +102,14 @@ export class BrandsService {
     return await this.findOne(id);
   }
 
-  async remove(branId: number) {
+  async remove(id: number) {
+    await this.findOne(id);
+
     const queryRunner = this.dataSource.createQueryRunner();
-    const brand = await this.findOne(branId);
-
-    if (!brand) {
-      throw new NotFoundException(`Brand ${branId} does not exist`);
-    }
-
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      await queryRunner.manager.delete(Brand, branId);
+      await queryRunner.manager.delete(Brand, id);
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -123,7 +119,7 @@ export class BrandsService {
     }
 
     return {
-      messaje: `Brand ${branId} deleted`,
+      messaje: `Brand ${id} deleted`,
     };
   }
 }
