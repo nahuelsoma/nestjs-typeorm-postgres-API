@@ -12,8 +12,6 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { CustomersService } from '../services/customers.service';
 import { CreateCustomerDto, UpdateCustomerDto } from '../dtos/customer.dto';
-import { Roles } from '../../auth/decorators/roles.decorator';
-import { Role } from '../../auth/models/roles.model';
 
 @ApiTags('Customers')
 @Controller('customers')
@@ -32,19 +30,17 @@ export class CustomersController {
     return this.customersService.findOne(id);
   }
 
-  @Roles(Role.ADMIN)
   @Post()
   @ApiOperation({
-    summary: 'Create a new customer (admin)',
+    summary: 'Create a new customer',
   })
   create(@Body() payload: CreateCustomerDto) {
     return this.customersService.create(payload);
   }
 
-  @Roles(Role.ADMIN)
   @Put(':id')
   @ApiOperation({
-    summary: 'Edit an existing customer (admin)',
+    summary: 'Edit an existing customer',
   })
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -53,10 +49,9 @@ export class CustomersController {
     return this.customersService.update(id, payload);
   }
 
-  @Roles(Role.ADMIN)
   @Delete(':id')
   @ApiOperation({
-    summary: 'Delete an existing customer (admin)',
+    summary: 'Delete an existing customer',
   })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.customersService.remove(+id);

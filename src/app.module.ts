@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { HttpModule, HttpService } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 
@@ -19,14 +18,16 @@ import config from './config';
       load: [config],
       isGlobal: true,
       validationSchema: Joi.object({
+        PORT: Joi.number().required(),
+        API_KEY: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        POSTGRES_HOST: Joi.string().required(),
+        POSTGRES_PORT: Joi.number().required(),
         POSTGRES_DB: Joi.string().required(),
         POSTGRES_USER: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
-        POSTGRES_PORT: Joi.number().required(),
-        POSTGRES_HOST: Joi.string().required(),
       }),
     }),
-    HttpModule,
     UsersModule,
     ProductsModule,
     DatabaseModule,

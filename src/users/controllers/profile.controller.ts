@@ -12,7 +12,6 @@ import { OrdersService } from '../services/orders.service';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('Profile')
 @Controller('profile')
-// @Controller('profile')
 export class ProfileController {
   constructor(private orderService: OrdersService) {}
 

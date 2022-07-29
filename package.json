@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm:prod": "node --require ts-node/register ./node_modules/typeorm/cli.js",
     "migrations:prod": "npm run typeorm:prod -- migration:run",
-    "typeorm": "typeorm-ts-node-commonjs -d ./src/database/ormconfig.ts",
+    "typeorm": "typeorm-ts-node-commonjs -d ./src/database/data-source.ts",
     "migration:generate": "npm run typeorm migration:generate",
     "migration:show": "npm run typeorm migration:show",
     "migration:run": "npm run typeorm migration:run",
