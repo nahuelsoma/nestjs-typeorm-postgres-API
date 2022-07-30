@@ -22,7 +22,8 @@ async function bootstrap() {
     .setDescription(
       `<ul><li>This API is developed with Nest.js, TypeORM and Postgres.</li>
       <li>You can test each endpoint with the information detailed in this documentation.</li>
-      <li>Endpoints marked as (admin) are restricted for use exclusively by users with the role: admin. In order to use them, you must first create a user with this role from the POST User endpoint.</li></ul>`,
+      <li>Endpoints marked as (admin) are restricted for use exclusively by users with the role: admin. In order to use them, you must first create a user with this role from the POST User endpoint.</li>
+      <li>Authentication is performed by a bearer token (JWT). This token is generated once the user log into the API.</li></ul>`,
     )
     .setVersion('1.0')
     .build();

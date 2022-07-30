@@ -2,9 +2,10 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  NotAcceptableException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { User } from '../entities/user.entity';
@@ -18,12 +19,19 @@ export class UsersService {
     private productsService: ProductsService,
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Customer) private customerRepo: Repository<Customer>,
+    private dataSource: DataSource,
   ) {}
 
-  findAll() {
-    return this.userRepo.find({
-      relations: ['customer'],
+  async findAll() {
+    const users = await this.userRepo.find({
+      relations: {
+        customer: true,
+      },
     });
+    users.sort((a, b) => {
+      return a.id - b.id;
+    });
+    return users;
   }
 
   async findOne(id: number) {
@@ -31,40 +39,81 @@ export class UsersService {
       where: {
         id,
       },
-      relations: ['customer'],
+      relations: {
+        customer: true,
+      },
     });
     if (!user) {
-      throw new NotFoundException(`User #${id} not found`);
+      throw new NotFoundException(`User id: ${id} not found`);
     }
     return user;
   }
 
   async findByEmail(email: string) {
-    const user = this.userRepo.findOne({ where: { email } });
+    const user = this.userRepo.findOne({
+      where: { email },
+      relations: { customer: true },
+    });
     if (!user) {
-      throw new NotFoundException(`User #${email} not found`);
+      throw new NotFoundException(`User ${email} not found`);
     }
     return user;
   }
 
-  async create(data: CreateUserDto) {
-    const newUser = this.userRepo.create(data);
+  async getOrderByUser(id: number) {
+    const user = this.findOne(id);
+    return {
+      date: new Date(),
+      user,
+      products: await this.productsService.findAll(),
+    };
+  }
+
+  async create(payload: CreateUserDto) {
+    const existingUser = await this.userRepo.findOneBy({
+      email: payload.email,
+    });
+    if (existingUser) {
+      throw new NotAcceptableException(
+        `User '${existingUser.email}' already exist with id: ${existingUser.id}`,
+      );
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    const newUser = queryRunner.manager.create(User, payload);
 
     const hashPassword = await bcrypt.hash(newUser.password, 10);
     newUser.password = hashPassword;
 
-    if (data.customerId) {
+    if (payload.customerId) {
       const customer = await this.customerRepo.findOneBy({
-        id: data.customerId,
+        id: payload.customerId,
       });
+      if (!customer) {
+        throw new NotFoundException(
+          `Customer id: ${payload.customerId} not found`,
+        );
+      }
       newUser.customer = customer;
     }
 
-    return this.userRepo.save(newUser);
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager.save(User, newUser);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new Error(error);
+    } finally {
+      await queryRunner.release();
+    }
+
+    return newUser;
   }
 
   async update(id: number, changes: UpdateUserDto) {
-    const user = await this.userRepo.findOneBy({ id });
+    const user = await this.findOne(id);
 
     if (changes.customerId) {
       const customer = await this.customerRepo.findOne({
@@ -75,30 +124,44 @@ export class UsersService {
           user: true,
         },
       });
-
-      if (customer.user) {
-        throw new ConflictException(
-          `User ${id} already has a customer id ${changes.customerId}`,
-        );
-      }
-
       user.customer = customer;
     }
 
-    this.userRepo.merge(user, changes);
-    return this.userRepo.save(user);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const editedUser = queryRunner.manager.merge(User, user, changes);
+      await queryRunner.manager.save(User, editedUser);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new Error(error);
+    } finally {
+      await queryRunner.release();
+    }
+
+    return await this.findOne(id);
   }
 
-  remove(id: number) {
-    return this.userRepo.delete(id);
-  }
+  async remove(id: number) {
+    await this.findOne(id);
 
-  async getOrderByUser(id: number) {
-    const user = this.findOne(id);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager.delete(User, id);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new Error(error);
+    } finally {
+      await queryRunner.release();
+    }
+
     return {
-      date: new Date(),
-      user,
-      products: await this.productsService.findAll(),
+      messaje: `User ${id} deleted`,
     };
   }
 }

@@ -19,7 +19,7 @@ import config from '../config';
           password,
           database,
           autoLoadEntities: true,
-          synchronize: true,
+          synchronize: false,
           logging: false,
         };
       },
