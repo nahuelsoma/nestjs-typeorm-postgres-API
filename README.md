@@ -377,3 +377,15 @@ To create a new migration:
 ```
 npm run migration:generate src/database/migrations/init
 ```
+
+To run migrations in local:
+
+```
+npm run migration:run
+```
+
+To run migrations in heroku:
+
+```
+heroku run npm run migration:run
+```
