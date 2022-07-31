@@ -1,3 +1,19 @@
+This repository contains the final app from a Nest.js course series, using TypeORM and Postgres.
+
+---
+
+**The final App is deployed in:**
+
+**https://obscure-shore-34429.herokuapp.com/**
+
+**You can check the full documentation here:**
+
+**https://obscure-shore-34429.herokuapp.com/docs**
+
+---
+
+The following is a list of what has been learned in this last part of the course:
+
 ## Initial config
 
 This course starts with an API already working. The authentication is going to be configurated on an already working endpoint.
