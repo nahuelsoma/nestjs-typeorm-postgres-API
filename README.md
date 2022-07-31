@@ -2,13 +2,13 @@ This repository contains the final app from a Nest.js course series, using TypeO
 
 ---
 
-**The final App is deployed in:**
+**The final App is deployed here:**
 
-**https://obscure-shore-34429.herokuapp.com/**
+👉 **<a href="https://obscure-shore-34429.herokuapp.com/" target="_blank">Final App</a>**
 
 **You can check the full documentation here:**
 
-**https://obscure-shore-34429.herokuapp.com/docs**
+👉 **<a href="https://obscure-shore-34429.herokuapp.com/docs/" target="_blank">App Documentation</a>**
 
 ---
 
